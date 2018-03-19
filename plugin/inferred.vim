@@ -66,17 +66,21 @@ function! s:Inferred() abort
     let score  = 1
     let indent = &tabstop
 
-    let candidate = 1
-    while candidate <= 8
+    for candidate in [2, 3, 4]
 
-        if scores[candidate] >= score
-            let score = scores[candidate]
+        let computed = candidate
+        for value in range(candidate, 4, candidate)
+            let computed += scores[value]
+        endfor
+
+        if computed >= score
+            let score = computed
             let indent = candidate
         endif
 
         let candidate += 1
 
-    endwhile
+    endfor
 
     return s:InferredSpaces(indent)
 
