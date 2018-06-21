@@ -40,7 +40,16 @@ function! s:Inferred() abort
         return
     endif
 
-    let scores = map(range(128), 0)
+    if &filetype ==# 'gitcommit'
+        return
+    endif
+
+    if &readonly
+        return
+    endif
+
+    let tabscore = 4
+    let scores = map(range(8), 0)
 
     let row = 1
     let sz = max([line('$'), 200])
@@ -51,11 +60,11 @@ function! s:Inferred() abort
             continue
         endif
 
-        let indent = matchstr(getline(row), '\v^\s*')
+        let indent = matchstr(getline(row), '\v^\s+')
 
-        if match(indent, '\t') != -1
-            return s:InferredTabs()
-        elseif strlen(indent) > 0
+        if match(indent, '\t') == 0
+            let tabscore += 1
+        elseif strlen(indent) < 8
             let scores[strlen(indent)] += 1
         endif
 
@@ -82,7 +91,11 @@ function! s:Inferred() abort
 
     endfor
 
-    return s:InferredSpaces(indent)
+    if tabscore >= score
+        return s:InferredTabs()
+    else
+        return s:InferredSpaces(indent)
+    endif
 
 endfunction
 
