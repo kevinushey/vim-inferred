@@ -52,7 +52,7 @@ function! s:Inferred() abort
     let scores = map(range(8), 0)
 
     let row = 1
-    let sz = max([line('$'), 200])
+    let sz = min([line('$'), 200])
     while row <= sz
 
         if (s:InsideStringOrComment(row))
