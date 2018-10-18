@@ -3,7 +3,7 @@
 " Version:      0.1
 " License:      Same as Vim itself.  See :help license
 
-if exists('g:loaded_inferred') || &cp
+if exists('g:loaded_inferred') || &compatible
     finish
 endif
 let g:loaded_inferred = 1
@@ -52,8 +52,9 @@ function! s:Inferred() abort
     let scores = map(range(8), 0)
 
     let row = 1
-    let sz = min([line('$'), 200])
-    while row <= sz
+    let end = line('$')
+    let sz = 200
+    while row < end
 
         if (s:InsideStringOrComment(row))
             let row += 1
@@ -69,6 +70,11 @@ function! s:Inferred() abort
         endif
 
         let row += 1
+        let sz += 1
+
+        if row == sz
+            break
+        endif
 
     endwhile
 
